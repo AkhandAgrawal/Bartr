@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Notification Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+</head>
+<body>
+<h2>WebSocket Notification Test</h2>
+<label for="userId">User ID:</label>
+<input type="text" id="userId" value="" placeholder="Enter your userId" />
+<button onclick="connect()">Connect & Subscribe</button>
+<div id="status"></div>
+<ul id="notifications"></ul>
+<script>
+    let stompClient = null;
+    function connect() {
+        const userId = document.getElementById('userId').value;
+        if (!userId) {
+            alert('Please enter your userId');
+            return;
+        }
+        const socket = new SockJS('/ws');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            document.getElementById('status').innerText = 'Connected as ' + userId;
+            stompClient.subscribe('/topic/notifications/' + userId, function (notification) {
+                const notif = JSON.parse(notification.body);
+                const li = document.createElement('li');
+                li.textContent = notif.message + ' (Type: ' + notif.type + ')';
+                document.getElementById('notifications').appendChild(li);
+            });
+        });
+    }
+</script>
+</body>
+</html>
+

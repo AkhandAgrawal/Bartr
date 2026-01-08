@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>bartr Chat - Match-Based Messaging</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7/bundles/stomp.umd.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+        .connection-status {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .connected { background-color: #d4edda; color: #155724; }
+        .disconnected { background-color: #f8d7da; color: #721c24; }
+        .user-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .user-controls label {
+            font-weight: bold;
+        }
+        .user-controls input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .user-controls button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .connect-btn { background-color: #28a745; color: white; }
+        .connect-btn:hover { background-color: #218838; }
+        .disconnect-btn { background-color: #dc3545; color: white; }
+        .disconnect-btn:hover { background-color: #c82333; }
+        .check-match-btn { background-color: #17a2b8; color: white; }
+        .check-match-btn:hover { background-color: #138496; }
+        #messages {
+            border: 1px solid #ddd;
+            height: 400px;
+            overflow-y: auto;
+            padding: 15px;
+            margin: 20px 0;
+            background-color: #fafafa;
+            border-radius: 5px;
+        }
+        .message {
+            margin: 8px 0;
+            padding: 10px;
+            border-radius: 8px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        .message.sent {
+            background-color: #007bff;
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+        .message.received {
+            background-color: #e9ecef;
+            color: #333;
+        }
+        .message.system {
+            background-color: #fff3cd;
+            color: #856404;
+            text-align: center;
+            margin: 10px auto;
+            font-style: italic;
+        }
+        .message-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .message-controls input[type="text"] {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .send-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .send-btn:hover { background-color: #0056b3; }
+        .send-btn:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .history-btn {
+            background-color: #6f42c1;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .history-btn:hover { background-color: #5a32a3; }
+        .match-status {
+            padding: 8px;
+            border-radius: 4px;
+            margin: 10px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+        .match-yes { background-color: #d4edda; color: #155724; }
+        .match-no { background-color: #f8d7da; color: #721c24; }
+        .timestamp {
+            font-size: 10px;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>bartr Chat</h1>
+            <p>Match-Based Messaging System</p>
+        </div>
+
+        <div id="connectionStatus" class="connection-status disconnected">
+            Disconnected
+        </div>
+
+        <div class="user-controls">
+            <label>Your User ID:</label>
+            <input type="text" id="userId" placeholder="Enter your user ID (e.g., user1)" />
+
+            <label>Chat with:</label>
+            <input type="text" id="receiverId" placeholder="Enter user ID to chat with" />
+
+            <button class="connect-btn" onclick="connect()">Connect</button>
+            <button class="disconnect-btn" onclick="disconnect()">Disconnect</button>
+            <button class="check-match-btn" onclick="checkMatch()">Check Match</button>
+        </div>
+
+        <div id="matchStatus" class="match-status" style="display: none;"></div>
+
+        <div id="messages"></div>
+
+        <div class="message-controls">
+            <input type="text" id="messageContent" placeholder="Type your message..." disabled />
+            <button class="send-btn" id="sendButton" onclick="sendMessage()" disabled>Send</button>
+            <button class="history-btn" onclick="getChatHistory()">History</button>
+        </div>
+    </div>
+
+    <script>
+        let stompClient = null;
+        let currentUserId = null;
+        let isConnected = false;
+
+        function updateConnectionStatus(connected, userId = null) {
+            const statusDiv = document.getElementById('connectionStatus');
+            const sendButton = document.getElementById('sendButton');
+            const messageInput = document.getElementById('messageContent');
+
+            if (connected) {
+                statusDiv.textContent = `Connected as ${userId}`;
+                statusDiv.className = 'connection-status connected';
+                sendButton.disabled = false;
+                messageInput.disabled = false;
+                isConnected = true;
+            } else {
+                statusDiv.textContent = 'Disconnected';
+                statusDiv.className = 'connection-status disconnected';
+                sendButton.disabled = true;
+                messageInput.disabled = true;
+                isConnected = false;
+            }
+        }
+
+        function connect() {
+            const userId = document.getElementById('userId').value.trim();
+            if (!userId) {
+                alert('Please enter your User ID');
+                return;
+            }
+
+            currentUserId = userId;
+            const socket = new SockJS('http://localhost:8083/ws');
+            stompClient = new StompJs.Client({
+                webSocketFactory: () => socket,
+                connectHeaders: {
+                    userId: userId
+                },
+                debug: (str) => {
+                    console.log('STOMP: ' + str);
+                },
+                onConnect: (frame) => {
+                    console.log('Connected: ' + frame);
+                    updateConnectionStatus(true, userId);
+                    addMessage(`Welcome ${userId}! You are now connected.`, 'system');
+
+                    // Subscribe to private messages for this user
+                    stompClient.subscribe('/queue/messages/' + userId, (message) => {
+                        const msg = JSON.parse(message.body);
+                        displayMessage(msg);
+                    });
+                },
+                onWebSocketError: (error) => {
+                    console.error('WebSocket error:', error);
+                    addMessage('WebSocket error occurred', 'system');
+                },
+                onStompError: (frame) => {
+                    console.error('STOMP error:', frame.headers['message']);
+                    addMessage('Connection error: ' + frame.headers['message'], 'system');
+                },
+                onDisconnect: () => {
+                    updateConnectionStatus(false);
+                    addMessage('Disconnected from server', 'system');
+                }
+            });
+
+            stompClient.activate();
+        }
+
+        function disconnect() {
+            if (stompClient !== null) {
+                stompClient.deactivate();
+                updateConnectionStatus(false);
+                addMessage('Disconnected', 'system');
+            }
+        }
+
+        function sendMessage() {
+            const receiverId = document.getElementById('receiverId').value.trim();
+            const content = document.getElementById('messageContent').value.trim();
+
+            if (!receiverId) {
+                alert('Please enter the User ID to chat with');
+                return;
+            }
+
+            if (!content) {
+                alert('Please enter a message');
+                return;
+            }
+
+            if (!isConnected) {
+                alert('Please connect first');
+                return;
+            }
+
+            const message = {
+                senderId: currentUserId,
+                receiverId: receiverId,
+                content: content,
+                timestamp: new Date().toISOString()
+            };
+
+            stompClient.publish({
+                destination: '/app/private-message',
+                body: JSON.stringify(message)
+            });
+
+            document.getElementById('messageContent').value = '';
+        }
+
+        function displayMessage(message) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+
+            let messageClass = 'message ';
+            let displayText = '';
+
+            if (message.senderId === 'system') {
+                messageClass += 'system';
+                displayText = message.content;
+            } else if (message.senderId === currentUserId) {
+                messageClass += 'sent';
+                displayText = `You -> ${message.receiverId}: ${message.content}`;
+            } else {
+                messageClass += 'received';
+                displayText = `${message.senderId}: ${message.content}`;
+            }
+
+            messageDiv.className = messageClass;
+            messageDiv.innerHTML = `
+                <div>${displayText}</div>
+                <div class="timestamp">${new Date(message.timestamp || new Date()).toLocaleString()}</div>
+            `;
+
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function addMessage(text, type = 'system') {
+            const message = {
+                senderId: type === 'system' ? 'system' : currentUserId,
+                content: text,
+                timestamp: new Date().toISOString()
+            };
+            displayMessage(message);
+        }
+
+        function checkMatch() {
+            const receiverId = document.getElementById('receiverId').value.trim();
+            if (!receiverId || !currentUserId) {
+                alert('Please enter both User IDs');
+                return;
+            }
+
+            fetch(`http://localhost:8083/check-match/${currentUserId}/${receiverId}`)
+                .then(response => response.json())
+                .then(isMatch => {
+                    const statusDiv = document.getElementById('matchStatus');
+                    statusDiv.style.display = 'block';
+
+                    if (isMatch) {
+                        statusDiv.textContent = `You are matched with ${receiverId}! You can chat.`;
+                        statusDiv.className = 'match-status match-yes';
+                    } else {
+                        statusDiv.textContent = `You are not matched with ${receiverId}. Cannot chat.`;
+                        statusDiv.className = 'match-status match-no';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking match:', error);
+                    addMessage('Error checking match status', 'system');
+                });
+        }
+
+        function getChatHistory() {
+            const receiverId = document.getElementById('receiverId').value.trim();
+            if (!receiverId || !currentUserId) {
+                alert('Please enter the User ID to get chat history with');
+                return;
+            }
+
+            fetch(`http://localhost:8083/messages/${currentUserId}/${receiverId}`)
+                .then(response => response.json())
+                .then(messages => {
+                    if (messages.length === 0) {
+                        addMessage('No chat history found or you are not matched with this user', 'system');
+                        return;
+                    }
+
+                    addMessage('--- Chat History ---', 'system');
+                    messages.forEach(msg => {
+                        displayMessage(msg);
+                    });
+                    addMessage('--- End of History ---', 'system');
+                })
+                .catch(error => {
+                    console.error('Error fetching chat history:', error);
+                    addMessage('Error fetching chat history', 'system');
+                });
+        }
+
+        // Allow sending message with Enter key
+        document.getElementById('messageContent').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Auto-focus on message input when page loads
+        window.addEventListener('load', function() {
+            document.getElementById('userId').focus();
+        });
+    </script>
+</body>
+</html>

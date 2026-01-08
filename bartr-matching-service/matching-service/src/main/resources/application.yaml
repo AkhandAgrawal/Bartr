@@ -1,0 +1,81 @@
+spring:
+  application:
+    name: Matching-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/testdb
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+  elasticsearch:
+    uris: https://localhost:9200
+    username: elastic
+    password: elastic
+    connection-timeout: 10s
+    socket-timeout: 60s
+    ssl:
+      trust-store: ""
+      trust-store-password: ""
+    verify-hostname: false
+#      verification-mode: none
+#      trust-all: true
+#      enabled: false
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: oauth-demo-client
+            client-secret: ZLClZb63KD6YUlQGyAbVjCJxp5d5wlik
+            redirect-uri: http://localhost:8080/login/oauth2/code/oauth-demo-client
+            authorization-grant-type: authorization_code
+            scope: openid,profile,email
+            provider: keycloak
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8081/realms/Bartr
+            user-name-attribute: preferred_username
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8081/realms/Bartr
+          jwk-set-uri: http://localhost:8081/realms/Bartr/protocol/openid-connect/certs
+    user:
+      name: admin
+      password: admin123
+  kafka:
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: com.bartr.common.kafka.KafkaAvroSerializer
+
+server:
+  port: 8082
+
+security:
+  cors:
+    allowed-origins: http://localhost:5173
+  oauth2:
+    jwk-set-uri: http://localhost:8081/realms/Bartr/protocol/openid-connect/certs
+    login:
+      default-success-url: /v1
+    logout:
+      success-url: http://localhost:8081/realms/Bartr/protocol/openid-connect/logout?redirect_uri=http://localhost:8080/
+  permit-all-patterns: /v1/stats/**
+
+feign:
+  client:
+    user-service:
+      url: http://localhost:8080
+
+
+keycloak:
+  serverUrl: http://localhost:8081
+  realm: Bartr
+  token-uri: http://localhost:8081/realms/Bartr/protocol/openid-connect/token
+  client-id: oauth-demo-client
+  client-secret: ZLClZb63KD6YUlQGyAbVjCJxp5d5wlik
+  username: admin
+  password: admin@123

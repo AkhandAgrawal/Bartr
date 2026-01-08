@@ -1,0 +1,57 @@
+spring:
+  application:
+    name: user-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/testdb
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: oauth-demo-client
+            client-secret: ZLClZb63KD6YUlQGyAbVjCJxp5d5wlik
+            redirect-uri: http://localhost:8080/login/oauth2/code/oauth-demo-client
+            authorization-grant-type: authorization_code
+            scope: openid,profile,email
+            provider: keycloak
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8081/realms/Bartr
+            user-name-attribute: preferred_username
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8081/realms/Bartr
+          jwk-set-uri: http://localhost:8081/realms/Bartr/protocol/openid-connect/certs
+    user:
+      name: admin
+      password: admin123
+
+keycloak:
+  serverUrl: http://localhost:8081
+  realm: Bartr
+  username: admin
+  password: admin@123
+  client-id: oauth-demo-client
+  client-secret: ZLClZb63KD6YUlQGyAbVjCJxp5d5wlik
+
+server:
+  port: 8080
+
+security:
+  cors:
+    allowed-origins: http://localhost:5173,http://localhost:3000
+  oauth2:
+    jwk-set-uri: http://localhost:8081/realms/Bartr/protocol/openid-connect/certs
+    login:
+      default-success-url: /v1/user/profile
+    logout:
+      success-url: http://localhost:8081/realms/Bartr/protocol/openid-connect/logout?redirect_uri=http://localhost:8080/
+  permit-all-patterns: /v1/user/profile/stats/**

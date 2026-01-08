@@ -1,0 +1,1305 @@
+{
+	"info": {
+		"_postman_id": "62a3ed22-30e8-4e99-bb9d-1847d6e5fdec",
+		"name": "BARTER",
+		"description": "Complete API collection for BARTER application - A skill bartering platform",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "41187348"
+	},
+	"item": [
+		{
+			"name": "Token",
+			"item": [
+				{
+					"name": "Get Access Token (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "oauth-demo-client",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "ZLClZb63KD6YUlQGyAbVjCJxp5d5wlik",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "admin@123",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "openid profile email",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8081/realms/oauth2-demo/protocol/openid-connect/token",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"realms",
+								"oauth2-demo",
+								"protocol",
+								"openid-connect",
+								"token"
+							]
+						},
+						"description": "Get access token for admin user directly from Keycloak"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Access Token (User)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "oauth-demo-client",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "ZLClZb63KD6YUlQGyAbVjCJxp5d5wlik",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "{{username}}",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "{{password}}",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "openid profile email",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8081/realms/oauth2-demo/protocol/openid-connect/token",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"realms",
+								"oauth2-demo",
+								"protocol",
+								"openid-connect",
+								"token"
+							]
+						},
+						"description": "Get access token for any user directly from Keycloak"
+					},
+					"response": []
+				},
+				{
+					"name": "Introspect Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "oauth-demo-client",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "ZLClZb63KD6YUlQGyAbVjCJxp5d5wlik",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8081/realms/oauth2-demo/protocol/openid-connect/token/introspect",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"realms",
+								"oauth2-demo",
+								"protocol",
+								"openid-connect",
+								"token",
+								"introspect"
+							]
+						},
+						"description": "Validate and get information about an access token"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "client_id",
+									"value": "oauth-demo-client",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "ZLClZb63KD6YUlQGyAbVjCJxp5d5wlik",
+									"type": "text"
+								},
+								{
+									"key": "refresh_token",
+									"value": "{{refresh_token}}",
+									"type": "text",
+									"description": "Refresh token to revoke"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8081/realms/oauth2-demo/protocol/openid-connect/logout",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"realms",
+								"oauth2-demo",
+								"protocol",
+								"openid-connect",
+								"logout"
+							]
+						},
+						"description": "Logout and revoke refresh token. This invalidates the refresh token and logs out the user session."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User Service (Port 8080)",
+			"item": [
+				{
+					"name": "Find Users by Skill",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJIOExIcGxfTEtSTnBSTmgyQmZTM1FCc1ZyTG9yUHU4WDl1aWVWb2hUekxnIn0.eyJleHAiOjE3NjY5NDYzMDMsImlhdCI6MTc2Njk0NTcwMywianRpIjoiNTBjN2E5ODgtNDJhMi00OGIzLWIyZGEtNDE0ZTMyNWFlZDg4IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgxL3JlYWxtcy9vYXV0aDItZGVtbyIsImF1ZCI6WyJyZWFsbS1tYW5hZ2VtZW50IiwiYWNjb3VudCJdLCJzdWIiOiJhMTNiOWM2MS00OTJmLTRjZWMtYTM1OS04ZGIxMzI2NTI2ZjUiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJvYXV0aC1kZW1vLWNsaWVudCIsInNpZCI6IjI1MzI2ZTU4LTJkYTItNDgxNy04M2E5LWJjNTVhOWM2YTNmNyIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovL2xvY2FsaG9zdDo4MDgwIiwiaHR0cDovL2xvY2FsaG9zdDo1MTczIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJkZWZhdWx0LXJvbGVzLW9hdXRoMi1kZW1vIiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7InJlYWxtLW1hbmFnZW1lbnQiOnsicm9sZXMiOlsiY3JlYXRlLWNsaWVudCIsInZpZXctdXNlcnMiLCJxdWVyeS1ncm91cHMiLCJxdWVyeS11c2VycyJdfSwiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZ2VuZGVyIjoibWFsZSIsIm5hbWUiOiJhZG1pbiBhZG1pbiIsInByZWZlcnJlZF91c2VybmFtZSI6ImFkbWluIiwiZ2l2ZW5fbmFtZSI6ImFkbWluIiwiZmFtaWx5X25hbWUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIn0.Ous9HbwBJnQ4JdQomHfhoCm7hV6YYkg5liNoAWHQu0g1VWGtsfhcBtbGDSJkR0zB750oadutABUdiitLt-8_QjzgyIqhuZPwkPC1-uvLT3lSY0BYkoWCs2wCBIemdJN0GhuqYyX3G53huIcxFaKx_Py84wy3OX5WqrNk8dXHZNL3Fq_y1dqoIzQDIVcYiAl0jGvxudVIRo2j6bubFinjXzeZ2qKGQkEqL1zNK2Ff4a7jZ_XnMmlvw5cBACZOUdQZkCKjGYQqwZNIp3E63G3ZmjpbNCOw3PG9I0SbQ3KS6ndAoHEIrapLQIm5N14AC3_gK89nz4OMl_APTaRBeYWkLQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/v1/user/profile/skills?skill=guitar",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"user",
+								"profile",
+								"skills"
+							],
+							"query": [
+								{
+									"key": "skill",
+									"value": "guitar",
+									"description": "Skill to search for"
+								}
+							]
+						},
+						"description": "Find users who offer or want a specific skill"
+					},
+					"response": []
+				},
+				{
+					"name": "Signup (Public)",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"gender\": \"M\",\n    \"userName\": \"john_doe\",\n    \"bio\": \"Software developer\",\n    \"password\": \"password123\",\n    \"email\": \"john.doe@example.com\",\n    \"skillsOffered\": [\"java\", \"spring boot\"],\n    \"skillsWanted\": [\"guitar\", \"singing\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/user/profile/signup/public",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"user",
+								"profile",
+								"signup",
+								"public"
+							]
+						},
+						"description": "Public endpoint to register a new user"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Profile by Keycloak ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/v1/user/profile?keycloakId={{keycloakId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"user",
+								"profile"
+							],
+							"query": [
+								{
+									"key": "keycloakId",
+									"value": "{{keycloakId}}",
+									"description": "User's Keycloak ID"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All User Profiles",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/v1/user/profile/all?page=0&size=10&sort=id,asc",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"user",
+								"profile",
+								"all"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "Page number (0-indexed)"
+								},
+								{
+									"key": "size",
+									"value": "10",
+									"description": "Page size"
+								},
+								{
+									"key": "sort",
+									"value": "id,asc",
+									"description": "Sort criteria"
+								}
+							]
+						},
+						"description": "Get all user profiles with pagination"
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"gender\": \"M\",\n    \"userName\": \"john_doe\",\n    \"bio\": \"Software developer\",\n    \"password\": \"newpassword123\",\n    \"email\": \"john.doe@example.com\",\n    \"skillsOffered\": [\"java\", \"spring boot\"],\n    \"skillsWanted\": [\"guitar\", \"singing\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/user/profile/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"user",
+								"profile",
+								"update"
+							]
+						},
+						"description": "Update the authenticated user's profile"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/v1/user/profile/delete?keycloakId={{keycloakId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"user",
+								"profile",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "keycloakId",
+									"value": "{{keycloakId}}",
+									"description": "User's Keycloak ID to delete"
+								}
+							]
+						},
+						"description": "Delete a user profile by Keycloak ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Active Users Count",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/v1/user/profile/stats/active-users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"user",
+								"profile",
+								"stats",
+								"active-users"
+							]
+						},
+						"description": "Get count of active users"
+					},
+					"response": []
+				},
+				{
+					"name": "Add Credits to User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/v1/user/profile/credits/add?keycloakId={{keycloakId}}&amount=10",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"user",
+								"profile",
+								"credits",
+								"add"
+							],
+							"query": [
+								{
+									"key": "keycloakId",
+									"value": "{{keycloakId}}",
+									"description": "User's Keycloak ID"
+								},
+								{
+									"key": "amount",
+									"value": "10",
+									"description": "Amount of credits to add"
+								}
+							]
+						},
+						"description": "Add credits to a user's account"
+					},
+					"response": []
+				},
+				{
+					"name": "Login (Public)",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"admin@123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/auth/login/public",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"auth",
+								"login",
+								"public"
+							]
+						},
+						"description": "Login endpoint that accepts username/password and returns JWT tokens"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Matching Service (Port 8082)",
+			"item": [
+				{
+					"name": "Get Top Matches",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8082/v1/matches/top?keycloakId={{keycloakId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"v1",
+								"matches",
+								"top"
+							],
+							"query": [
+								{
+									"key": "keycloakId",
+									"value": "{{keycloakId}}",
+									"description": "User's Keycloak ID"
+								}
+							]
+						},
+						"description": "Get personalized top matches for a user"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Match History",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8082/v1/matches/history?keycloakId={{keycloakId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"v1",
+								"matches",
+								"history"
+							],
+							"query": [
+								{
+									"key": "keycloakId",
+									"value": "{{keycloakId}}",
+									"description": "User's Keycloak ID"
+								}
+							]
+						},
+						"description": "Get match history for a user"
+					},
+					"response": []
+				},
+				{
+					"name": "Swipe (Like/Pass)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": \"{{keycloakId}}\",\n    \"swipedUserId\": \"{{swipedUserId}}\",\n    \"action\": \"RIGHT\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8082/v1/swipe",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"v1",
+								"swipe"
+							]
+						},
+						"description": "Record a swipe action (RIGHT = like, LEFT = pass). Returns match information if both users swiped right."
+					},
+					"response": []
+				},
+				{
+					"name": "Sync User to Elasticsearch",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8082/v1/sync/user?keycloakId={{keycloakId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"v1",
+								"sync",
+								"user"
+							],
+							"query": [
+								{
+									"key": "keycloakId",
+									"value": "{{keycloakId}}",
+									"description": "User's Keycloak ID to sync"
+								}
+							]
+						},
+						"description": "Sync user data to Elasticsearch for matching"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Matches Count",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8082/v1/stats/matches",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"v1",
+								"stats",
+								"matches"
+							]
+						},
+						"description": "Get total number of matches in the system"
+					},
+					"response": []
+				},
+				{
+					"name": "Unmatch Users",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8082/v1/matches/unmatch?user1Id={{user1Id}}&user2Id={{user2Id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"v1",
+								"matches",
+								"unmatch"
+							],
+							"query": [
+								{
+									"key": "user1Id",
+									"value": "{{user1Id}}",
+									"description": "First user's Keycloak ID"
+								},
+								{
+									"key": "user2Id",
+									"value": "{{user2Id}}",
+									"description": "Second user's Keycloak ID"
+								}
+							]
+						},
+						"description": "Unmatch two users who were previously matched. This removes the match record from the database."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Elasticsearch (Port 9200)",
+			"item": [
+				{
+					"name": "Create Index",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "elastic",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "elastic",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"mappings\": {\n        \"properties\": {\n            \"keycloakId\": {\"type\": \"keyword\"},\n            \"firstName\": {\"type\": \"text\"},\n            \"lastName\": {\"type\": \"text\"},\n            \"skillsOffered\": {\"type\": \"keyword\"},\n            \"skillsWanted\": {\"type\": \"keyword\"}\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:9200/users_index",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"users_index"
+							]
+						},
+						"description": "Create Elasticsearch index for users"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Index Mapping",
+					"protocolProfileBehavior": {
+						"strictSSL": false
+					},
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "elastic",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "elastic",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:9200/users_index/_mapping",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"users_index",
+								"_mapping"
+							]
+						},
+						"description": "Get the mapping schema for the users index"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Chat Service (Port 8083)",
+			"item": [
+				{
+					"name": "Get Chat History",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8083/messages?senderId={{senderId}}&receiverId={{receiverId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"messages"
+							],
+							"query": [
+								{
+									"key": "senderId",
+									"value": "{{senderId}}",
+									"description": "Sender's user ID"
+								},
+								{
+									"key": "receiverId",
+									"value": "{{receiverId}}",
+									"description": "Receiver's user ID"
+								}
+							]
+						},
+						"description": "Get chat history between two users. Only works if users are matched or have existing messages."
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Conversations",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8083/conversations?userId={{userId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"conversations"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "{{userId}}",
+									"description": "User ID to get conversations for"
+								}
+							]
+						},
+						"description": "Get all conversations for a user (returns last message from each conversation)"
+					},
+					"response": []
+				},
+				{
+					"name": "Check Match Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8083/check-match/{{userId1}}/{{userId2}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"check-match",
+								"{{userId1}}",
+								"{{userId2}}"
+							]
+						},
+						"description": "Check if two users are matched"
+					},
+					"response": []
+				},
+				{
+					"name": "WebSocket Connection Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "ws://localhost:8083/ws",
+							"protocol": "ws",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"ws"
+							]
+						},
+						"description": "WebSocket endpoint for real-time messaging.\n\nConnection: ws://localhost:8083/ws\n\nSubscribe to: /user/{userId}/queue/messages\n\nSend messages to: /app/private-message\n\nMessage format:\n{\n  \"senderId\": \"user-uuid\",\n  \"receiverId\": \"user-uuid\",\n  \"content\": \"Hello!\"\n}"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Notification(Port 8084)",
+			"item": [
+				{
+					"name": "Get Notifications",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8084/notifications/{{userId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8084",
+							"path": [
+								"notifications",
+								"{{userId}}"
+							]
+						},
+						"description": "Get all notifications for a user"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "keycloakId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "senderId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "receiverId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "userId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "userId1",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "userId2",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "swipedUserId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "username",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "password",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "refresh_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "user1Id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "user2Id",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

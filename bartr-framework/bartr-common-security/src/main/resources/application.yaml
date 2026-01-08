@@ -1,0 +1,33 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: oauth-demo-client
+            client-secret: ZLClZb63KD6YUlQGyAbVjCJxp5d5wlik
+            redirect-uri: http://localhost:8080/login/oauth2/code/oauth-demo-client
+            authorization-grant-type: authorization_code
+            scope: openid,profile,email
+            provider: keycloak
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8081/realms/Bartr
+            user-name-attribute: preferred_username
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8081/realms/Bartr
+          jwk-set-uri: http://localhost:8081/realms/Bartr/protocol/openid-connect/certs
+    user:
+      name: admin
+      password: admin123
+
+keycloak:
+  serverUrl: http://localhost:8081
+  realm: Bartr
+  username: admin
+  password: admin@123
+  client-id: oauth-demo-client
+
+server:
+  port: 8085

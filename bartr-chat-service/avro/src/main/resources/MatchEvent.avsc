@@ -1,0 +1,20 @@
+{
+  "type": "record",
+  "name": "MatchEvent",
+  "namespace": "com.bartr.chat.avro",
+  "fields": [
+    {"name": "user1Id", "type": {"type": "string", "logicalType": "uuid"}
+    },
+    {
+      "name": "user2Id",
+      "type": {
+        "type": "string",
+        "logicalType": "uuid"
+      }
+    },
+    {
+      "name": "matchedTimestamp",
+      "type": "string"
+    }
+  ]
+}

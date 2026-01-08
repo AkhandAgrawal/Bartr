@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bartr</title>
+    <script>
+      // Polyfills for Node.js globals required by sockjs-client
+      if (typeof global === 'undefined') {
+        window.global = globalThis;
+      }
+      if (typeof process === 'undefined') {
+        window.process = {
+          env: {},
+          platform: 'browser',
+          version: 'v18.0.0',
+          browser: true,
+          nextTick: setTimeout
+        };
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

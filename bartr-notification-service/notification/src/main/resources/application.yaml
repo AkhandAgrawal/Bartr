@@ -1,0 +1,99 @@
+spring:
+  application:
+    name: notification-service
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: oauth-demo-client
+            client-secret: ZLClZb63KD6YUlQGyAbVjCJxp5d5wlik
+            redirect-uri: http://localhost:8080/login/oauth2/code/oauth-demo-client
+            authorization-grant-type: authorization_code
+            scope: openid,profile,email
+            provider: keycloak
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8081/realms/Bartr
+            user-name-attribute: preferred_username
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8081/realms/Bartr
+          jwk-set-uri: http://localhost:8081/realms/Bartr/protocol/openid-connect/certs
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/notification_app
+      database: notification_app
+      auto-index-creation: true
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: com.bartr.common.kafka.KafkaAvroSerializer
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: com.bartr.common.kafka.KafkaAvroDeserializer
+      properties:
+        custom.avro.use.generic.record: true
+        custom.avro.match.schema: |
+          {
+            "type": "record",
+            "name": "MatchEvent",
+            "namespace": "com.bartr.notification.avro",
+            "fields": [
+              {"name": "user1Id", "type": { "type": "string","logicalType": "uuid"}},
+              {"name": "user2Id","type": {"type": "string","logicalType": "uuid"}},
+              {"name": "matchedTimestamp","type": "string"}
+            ]
+          }
+        custom.avro.message.schema: |
+          {
+            "type": "record",
+            "name": "MessageEvent",
+            "namespace": "com.bartr.notification.avro",
+            "fields": [
+              {"name": "senderId", "type": { "type": "string","logicalType": "uuid"}},
+              {"name": "receiverId", "type": { "type": "string","logicalType": "uuid"}},
+              {"name": "messageTimestamp", "type": "string"},
+              {"name": "message", "type": "string"}
+            ]
+          }
+
+server:
+  port: 8084
+
+
+security:
+  cors:
+    allowed-origins: http://localhost:5173
+  oauth2:
+    jwk-set-uri: http://localhost:8081/realms/Bartr/protocol/openid-connect/certs
+    login:
+      default-success-url: /v1/user/profile
+    logout:
+      success-url: http://localhost:8081/realms/Bartr/protocol/openid-connect/logout?redirect_uri=http://localhost:8080/
+  permit-all-patterns: /ws/**,/topic/**,/app/**,/user/**,/queue/**,/messages/**,/check-match/**,/notifications/**,/static/**,/*.html
+
+feign:
+  client:
+    user-service:
+      url: http://localhost:8080
+
+keycloak:
+  token-uri: http://localhost:8081/realms/Bartr/protocol/openid-connect/token
+  serverUrl: http://localhost:8081
+  client-id: oauth-demo-client
+  client-secret: ZLClZb63KD6YUlQGyAbVjCJxp5d5wlik
+  username: admin
+  password: admin@123
+  realm: Bartr
+
+logging:
+  level:
+    org.springframework.data.mongodb: INFO
+    org.mongodb: WARN
+    com.bartr.notification: INFO
+    org.springframework.web.socket: INFO
+    org.springframework.messaging: INFO
+    com.bartr.notification.controller: INFO
+    com.bartr.notification.messaging: INFO

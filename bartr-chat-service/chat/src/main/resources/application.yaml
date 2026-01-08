@@ -1,0 +1,89 @@
+spring:
+  application:
+    name: chat-service
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: oauth-demo-client
+            client-secret: ZLClZb63KD6YUlQGyAbVjCJxp5d5wlik
+            redirect-uri: http://localhost:8080/login/oauth2/code/oauth-demo-client
+            authorization-grant-type: authorization_code
+            scope: openid,profile,email
+            provider: keycloak
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8081/realms/Bartr
+            user-name-attribute: preferred_username
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8081/realms/Bartr
+          jwk-set-uri: http://localhost:8081/realms/Bartr/protocol/openid-connect/certs
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/chatapp
+      database: chatapp
+      auto-index-creation: true
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: com.bartr.common.kafka.KafkaAvroSerializer
+    consumer:
+      bootstrap-servers: localhost:9092
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: com.bartr.common.kafka.KafkaAvroDeserializer
+      group-id: chat-app
+      auto-offset-reset: earliest
+      enable-auto-commit: true
+      properties:
+        custom.avro.schema: |
+          {
+            "type": "record",
+            "name": "MatchEvent",
+            "namespace": "com.bartr.chat.avro",
+            "fields": [
+              {"name": "user1Id", "type": {"type": "string", "logicalType": "uuid"}},
+              {"name": "user2Id", "type": {"type": "string", "logicalType": "uuid"}},
+              {"name": "matchedTimestamp", "type": "string"}
+            ]
+          }
+
+keycloak:
+  serverUrl: http://localhost:8081
+  realm: Bartr
+  username: admin
+  password: admin@123
+  client-id: oauth-demo-client
+
+server:
+  port: 8083
+
+security:
+  cors:
+    allowed-origins: http://localhost:5173,http://localhost:3000,http://localhost:5174,http://127.0.0.1:5173,http://127.0.0.1:3000
+  oauth2:
+    jwk-set-uri: http://localhost:8081/realms/Bartr/protocol/openid-connect/certs
+    login:
+      default-success-url: /v1/user/profile
+    logout:
+      success-url: http://localhost:8081/realms/Bartr/protocol/openid-connect/logout?redirect_uri=http://localhost:8080/
+  permit-all-patterns: /ws/**,/topic/**,/app/**,/user/**,/queue/**,/messages,/messages/**,/check-match/**,/conversations,/conversations/**,/static/**,/*.html
+
+feign:
+  client:
+    matching-service:
+      url: http://localhost:8082
+    user-service:
+      url: http://localhost:8080
+
+logging:
+  level:
+    org.springframework.data.mongodb: INFO
+    org.mongodb: WARN
+    com.bartr.chat: INFO
+    org.springframework.web.socket: INFO
+    org.springframework.messaging: INFO
+    com.bartr.chat.controller: INFO
+    com.bartr.chat.application: INFO
