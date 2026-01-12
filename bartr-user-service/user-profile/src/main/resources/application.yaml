@@ -2,10 +2,13 @@ spring:
   application:
     name: user-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/testdb
+#    url: jdbc:postgresql://localhost:5432/testdb
+    url: ${DB_URL}
     driver-class-name: org.postgresql.Driver
-    username: postgres
-    password: password
+#    username: postgres
+#    password: password
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
