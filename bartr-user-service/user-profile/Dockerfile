@@ -2,12 +2,10 @@
 FROM maven:3.9.6-eclipse-temurin-21 AS build
 
 WORKDIR /build
-
-# Copy full repo (needed for reactor)
 COPY . .
 
-# Build framework + user-profile
-RUN mvn -pl user-profile -am clean package -DskipTests
+# Build entire user-service reactor
+RUN mvn -pl bartr-user-service -am clean package -DskipTests
 
 
 # ---------- Runtime stage ----------
