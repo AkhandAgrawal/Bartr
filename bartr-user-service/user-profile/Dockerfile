@@ -1,15 +1,14 @@
-# Use a stable Java 17 runtime
+# -------- BUILD STAGE --------
+FROM maven:3.9.6-eclipse-temurin-21 AS build
+WORKDIR /build
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+# -------- RUN STAGE --------
 FROM eclipse-temurin:21-jre-alpine
-
-# Set working directory inside container
 WORKDIR /app
+COPY --from=build /build/target/*.jar app.jar
 
-# Copy the built jar
-ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} app.jar
-
-# Expose port (Railway injects PORT dynamically)
 EXPOSE 8080
-
-# Run the application
 ENTRYPOINT ["java","-jar","app.jar"]
