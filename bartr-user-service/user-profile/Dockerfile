@@ -3,12 +3,11 @@ FROM maven:3.9.6-eclipse-temurin-21 AS build
 
 WORKDIR /build
 
-# Copy everything needed for dependency resolution
-COPY bartr-framework bartr-framework
-COPY bartr-user-service bartr-user-service
+# Copy full repo (needed for reactor)
+COPY . .
 
 # Build framework + user-profile
-RUN mvn -pl bartr-user-service/user-profile -am clean package -DskipTests
+RUN mvn -pl user-profile -am clean package -DskipTests
 
 
 # ---------- Runtime stage ----------
