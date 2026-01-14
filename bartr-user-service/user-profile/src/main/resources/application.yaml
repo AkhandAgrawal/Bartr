@@ -46,8 +46,8 @@ keycloak:
   client-id: oauth-demo-client
   client-secret: ZLClZb63KD6YUlQGyAbVjCJxp5d5wlik
 
-server:
-  port: 8080
+#server:
+#  port: 8080
 
 security:
   cors:
