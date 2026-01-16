@@ -1,18 +1,19 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  FiUsers, FiMessageCircle, FiSearch, FiArrowRight, FiCode, 
+import {
+  FiUsers, FiMessageCircle, FiSearch, FiArrowRight, FiCode,
   FiMusic, FiBook, FiZap, FiShield, FiTrendingUp, FiHeart, FiStar,
   FiCheck, FiAward, FiChevronDown, FiChevronUp
 } from 'react-icons/fi';
 import { userService } from '../services/userService';
 import { matchingService } from '../services/matchingService';
+import { Navbar } from '../components/Navbar';
+import { authService } from '../services/authService';
 
 export const Landing = () => {
   const auth = useAuth();
-  const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(false);
   const [stats, setStats] = useState({ activeUsers: 0, matchesMade: 0 });
 
@@ -73,12 +74,8 @@ export const Landing = () => {
     fetchStats();
   }, []);
 
-  // Redirect authenticated users to dashboard
-  useEffect(() => {
-    if (auth.isAuthenticated && !auth.isLoading) {
-      navigate('/dashboard', { replace: true });
-    }
-  }, [auth.isAuthenticated, auth.isLoading, navigate]);
+  // Check if user is authenticated
+  const isAuthenticated = auth.isAuthenticated || authService.isAuthenticated();
 
   // Show loading state while checking authentication
   if (auth.isLoading) {
@@ -87,11 +84,6 @@ export const Landing = () => {
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-900"></div>
       </div>
     );
-  }
-
-  // Don't render landing page content if user is authenticated
-  if (auth.isAuthenticated) {
-    return null; // Will redirect to dashboard
   }
 
   // FAQ Component
@@ -218,6 +210,9 @@ export const Landing = () => {
 
   return (
     <div className="overflow-x-hidden bg-gradient-to-b from-slate-50 via-blue-50 to-indigo-50">
+      {/* Navbar - only show for logged-in users */}
+      {isAuthenticated && <Navbar />}
+
       {/* Hero Section - Side by Side Layout */}
       <section className="min-h-screen flex items-center py-4 md:py-6 px-4 sm:px-6 lg:px-8 xl:px-12 relative overflow-x-visible overflow-y-visible">
         {/* Animated background elements */}
