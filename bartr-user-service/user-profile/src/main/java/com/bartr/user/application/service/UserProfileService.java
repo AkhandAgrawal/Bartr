@@ -120,6 +120,7 @@ public class UserProfileService {
             String location = response.getHeaderString("Location");
             userId = location.substring(location.lastIndexOf("/")+1);
         } catch (Exception e) {
+            log.error("REAL ERROR ↓↓↓", e);
             throw exceptionUtility.createServiceException(ErrorMessages.KEYCLOAK_USER_CREATION_FAILED);
         }
         return UUID.fromString(userId);
