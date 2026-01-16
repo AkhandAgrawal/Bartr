@@ -18,7 +18,7 @@ export const oidcConfig = {
   authority: `${config.keycloak.url}/realms/${config.keycloak.realm}`,
   client_id: 'bartr-frontend',
   redirect_uri: `${config.frontend.baseUrl}/`,
-  post_logout_redirect_uri: `${config.frontend.baseUrl}/login`,
+  post_logout_redirect_uri: `${config.frontend.baseUrl}`,
   response_type: 'code', // Authorization code flow
   scope: 'openid profile email',
   automaticSilentRenew: true,
