@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import type { Message } from '../types/chat';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
+import { config } from '../config/env';
 
 interface ChatState {
   stompClient: Client | null;
@@ -28,7 +29,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
   connect: (userId: string, accessToken?: string | null) => {
     const { stompClient } = get();
-    
+
     // If already connected, don't reconnect
     if (stompClient && get().isConnected) {
       console.log('WebSocket already connected');
@@ -41,8 +42,13 @@ export const useChatStore = create<ChatState>((set, get) => ({
     }
 
     console.log('Connecting to WebSocket for user:', userId);
-    // Create SockJS connection - backend CORS is configured to allow localhost:5173
-    const socket = new SockJS('http://localhost:8083/ws');
+    // Create SockJS connection using configured chat service URL
+    const wsUrl = `${config.api.chatServiceUrl}/ws`;
+    if (!config.api.chatServiceUrl) {
+      console.error('Chat service URL is not configured. Please set VITE_CHAT_SERVICE_URL environment variable.');
+      return;
+    }
+    const socket = new SockJS(wsUrl);
     const client = new Client({
       webSocketFactory: () => socket as any,
       connectHeaders: {
@@ -61,13 +67,13 @@ export const useChatStore = create<ChatState>((set, get) => ({
           console.log('📨 Received message:', message.body);
           try {
             const msg: Message = JSON.parse(message.body);
-            
+
             // Ignore system messages
             if (msg.senderId === 'system') {
               console.log('Ignoring system message:', msg.content);
               return;
             }
-            
+
             // Determine the other user's ID (if current user is receiver, other is sender, and vice versa)
             const otherUserId = msg.senderId === userId ? msg.receiverId : msg.senderId;
             const chatKey = getChatKey(userId, otherUserId);
@@ -121,7 +127,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
     const { stompClient, isConnected } = get();
     console.log('📤 Attempting to send message:', message);
     console.log('WebSocket state - isConnected:', isConnected, 'stompClient:', !!stompClient);
-    
+
     if (stompClient && isConnected) {
       try {
         stompClient.publish({
@@ -160,7 +166,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
                m.timestamp && message.timestamp &&
                Math.abs(new Date(m.timestamp).getTime() - new Date(message.timestamp).getTime()) < 1000;
       });
-      
+
       if (!isDuplicate) {
         return {
           messages: {
@@ -185,4 +191,3 @@ export const useChatStore = create<ChatState>((set, get) => ({
     });
   },
 }));
-
