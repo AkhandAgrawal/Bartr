@@ -1,4 +1,4 @@
-package com.bartr.common.security;
+package com.bartr.user.application.config;
 
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
@@ -9,26 +9,27 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class KeycloakAdminConfig {
+
     @Value("${keycloak.serverUrl}")
     private String serverUrl;
+
     @Value("${keycloak.realm}")
     private String realm;
+
     @Value("${keycloak.client-id}")
     private String clientId;
-    @Value("${keycloak.username}")
-    private String username;
-    @Value("${keycloak.password}")
-    private String password;
+
+    @Value("${keycloak.client-secret}")
+    private String clientSecret;
 
     @Bean
-    public Keycloak keycloakAdminClient(){
+    public Keycloak keycloakAdminClient() {
         return KeycloakBuilder.builder()
                 .serverUrl(serverUrl)
-                .realm("master")
-                .username(username)
-                .password(password)
-                .clientId("admin-cli")
-                .grantType(OAuth2Constants.PASSWORD)
+                .realm(realm)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
                 .build();
     }
 }
