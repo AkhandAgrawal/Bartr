@@ -93,8 +93,14 @@ public class SecurityConfig {
         
         // Parse allowed origins from comma-separated string
         List<String> origins = Arrays.asList(allowedOrigins.split(","));
-        configuration.setAllowedOrigins(origins.stream().map(String::trim).toList());
-        
+//        configuration.setAllowedOrigins(origins.stream().map(String::trim).toList());
+        configuration.setAllowedOriginPatterns(List.of(
+                "http://localhost:*",
+                "https://*.railway.app",
+                "https://*.vercel.app"
+        ));
+
+
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setExposedHeaders(Arrays.asList("*"));
