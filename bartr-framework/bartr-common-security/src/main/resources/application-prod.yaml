@@ -29,6 +29,7 @@ security:
     jwk-set-uri: ${KEYCLOAK_JWK_SET_URI}
     login:
       default-success-url: /v1/user/profile
+  permit-all-patterns: /v1/stats/**
 #    logout:
 #      success-url: ${KEYCLOAK_ISSUER_URI}/protocol/openid-connect/logout?redirect_uri=https://bartr-dev.vercel.app/
 
