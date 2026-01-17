@@ -61,10 +61,10 @@ logging:
     org.springframework.security: DEBUG
 
 
-#keycloak:
-#  serverUrl: https://keycloak-production-c945.up.railway.app
-#  realm: Bartr
-#  username: admin
-#  password: admin@123
-#  client-id: ${KEYCLOAK_CLIENT_ID}
-#  client-secret: ${KEYCLOAK_CLIENT_SECRET}
+keycloak:
+  serverUrl: https://keycloak-production-c945.up.railway.app
+  realm: Bartr
+  username: admin
+  password: admin@123
+  client-id: ${KEYCLOAK_CLIENT_ID}
+  client-secret: ${KEYCLOAK_CLIENT_SECRET}
